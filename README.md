@@ -8,5 +8,8 @@ There are 2 modes, arrow keys input and mouse input.  For arrow key mode, positi
 
 # dependencies
 download the pytorch model denoted by .pth extension
+
+Python 3.6, 3.7, or 3.8
+
 install all necessary libraries:
-pytorch torchvision numpy pyatogui open-cv
+pytorch torchvision numpy pyatogui open-cv pygaze psychopy
