@@ -1,5 +1,6 @@
 # eye_mouse
 Quick project combining a previous project that detects real time gestures with an open source eye tracker to make a rudimentary hands-free UI.  The open source eye tracking software can be found here: http://www.pygaze.org/documentation/
+make sure you calibrate your webcam first by following the pygaze guide.
 
 # webcam
 The machine learning model is quite biased and sensitive, but you can supplement its performance.
