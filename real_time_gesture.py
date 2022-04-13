@@ -65,22 +65,26 @@ def main():
                 if (check_previous(prevs, previous_detections_considered, command)):
                     #if THRESH consecutive gestures were detected in a row, send command\
                     #### SEND COMMAND HERE ####
-                    if (command>0): print(cmds[command], "COMMAND SENT: ",command)
-                    if mode == "arrow": #arrow key mode
+                    
+                    if mode == "arrow" and command>0: #arrow key mode
+                        print(cmds[command], "COMMAND SENT: ",command)
                         pyag.press(keymap[cmds[command]])
-                    else:
+                    elif mode == "mouse":
                         #x, y = pyag.position()
+                        
                         if command == 4 and not mouse_clicked:
+                            print("mouse pressed")
                             mouse_clicked = True
                             pyag.mouseDown()
                         elif command != 4:
+                            if mouse_clicked: print("mouse released")
                             mouse_clicked = False
                             pyag.mouseUp()
                                 
                     set_previous(prevs, previous_detections_considered, command)
 
                 else:    
-                    print(cmds[command])
+                    #print(cmds[command])
                     set_previous(prevs, previous_detections_considered, command)
                     
     cam.release()
