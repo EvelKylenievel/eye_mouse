@@ -136,21 +136,13 @@ if __name__ == '__main__':
     if torch.cuda.is_available(): print("Using CUDA gpu") 
     else: print("CUDA not available")
     cv2.namedWindow("webcam feed")
-    
-    if mode == "arrow":
-        keymap = {
-        "Palm Flat": 'down',
-        "Thumbs Up": 'up', 
-        "Point Right": 'right', 
-        "Point Left": 'left' 
-        }
-    elif mode == "mouse":
-        keymap = {
-        'Point Left': 0x0002,
-        'left_release': 0x0004,
-        'right_click': 0x008, 
-        'right_release': 0x010 
-        }
+
+    keymap = { #for arrow mode only
+    "Palm Flat": 'down',
+    "Thumbs Up": 'up', 
+    "Point Right": 'right', 
+    "Point Left": 'left' 
+    }
     cmds = ["None", "Palm Flat", "Point Left", "Point Right", "Thumbs Up"]
     
     main()
