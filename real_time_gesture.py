@@ -16,8 +16,6 @@ import matplotlib.pyplot as plt
 from PIL import Image
 
 ####  Synthesizing code from http://www.pygaze.org/documentation/
-import highscores
-from constants import *
 
 from pygaze import libtime
 from pygaze.libscreen import Display, Screen
@@ -52,7 +50,6 @@ def main():
     eyetracker.start_recording()
     trialstart = libtime.get_time()
     points = 0
-    stimpos = STIMPOS
     t0 = libtime.get_time()
     tstim = libtime.get_time()
     
@@ -195,11 +192,6 @@ if __name__ == '__main__':
     
     # eyelink calibration
     eyetracker.calibrate()
-    
-    # display surface
-    #disp.fill(screen=blankscreen)
-    #disp.show()
-    ####
     
     
     main()
