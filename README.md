@@ -13,3 +13,5 @@ download the pytorch model and real time gesture python script
 
 necessary libraries:
 pytorch torchvision numpy pyatogui open-cv pygaze psychopy
+
+>python real_time_gesture.py --mode=mouse
