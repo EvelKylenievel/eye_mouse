@@ -15,6 +15,19 @@ from torchvision import datasets, models, transforms
 import matplotlib.pyplot as plt
 from PIL import Image
 
+####  Synthesizing code from http://www.pygaze.org/documentation/
+import highscores
+from constants import *
+
+from pygaze import libtime
+from pygaze.libscreen import Display, Screen
+from pygaze.libinput import Keyboard
+from pygaze.eyetracker import EyeTracker
+
+import random
+#####
+
+
 
 def set_previous(prevs, thresh=2, command=0):
     #shift the prevs array, set the most recent action
@@ -35,6 +48,14 @@ def check_previous(prevs, thresh=2, command=0):
 def main():
     img_counter = 0
     mouse_clicked =  False
+    
+    eyetracker.start_recording()
+    trialstart = libtime.get_time()
+    points = 0
+    stimpos = STIMPOS
+    t0 = libtime.get_time()
+    tstim = libtime.get_time()
+    
     while True:
         ret, frame = cam.read()
         if not ret:
@@ -51,6 +72,8 @@ def main():
             img_name = "opencv_frame_{count}.png".format(count = img_counter)
             
             if (img_counter % interval == 0):
+                gazepos = eyetracker.sample()
+                pyag.moveTo(gazepos)
                 cv2.imwrite(img_name, frame)
                 img_pil = Image.open(img_name)
                 img = data_transforms(img_pil)
@@ -87,18 +110,19 @@ def main():
                     #print(cmds[command])
                     set_previous(prevs, previous_detections_considered, command)
                     
+    trialend = libtime.get_time()
+    eyetracker.stop_recording()
     cam.release()
     cv2.destroyAllWindows()
 
 
 if __name__ == '__main__':
     #optional arguments
-    #For best performance, powerful PCs should increase the interval and previous detections considered.
     description  = "usage: python real_time_gesture.py --interval=[int] --prev_considered=[int] --mode=['arrow' or 'mouse'] \nNOTE: Experimental only, not for practical usage"
     parser = argparse.ArgumentParser(prog="real_time_gesture.py",usage=description)
     opt_group = parser.add_argument_group("Options")
     opt_group.add_argument('--prev_considered', dest='previous_detections_considered', action='store', default=2, type=int, help='how many consecutive times should we identify a gesture before sending a command?')
-    opt_group.add_argument('--interval', dest='interval', action='store', default=5, type=int, help='how many frames pass before we analyze another one? (use lower number if using CUDA)')
+    opt_group.add_argument('--interval', dest='interval', action='store', default=15, type=int, help='how many frames pass before we analyze another one? (use lower number if using CUDA)')
     opt_group.add_argument('--mode', dest='mode', action='store', default="arrow", type=str, help='arrow mode: gestures correlate to the arrow keys. mouse mode: gestures correlate to left and right click')
     
     args = parser.parse_args() 
@@ -113,11 +137,10 @@ if __name__ == '__main__':
     print("Booting Camera")
     print("'esc' to close")
 
-    cam = cv2.VideoCapture(0)
-    fps = cam.get(cv2.CAP_PROP_FPS)
-
+    cam = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+    #fps = cam.get(cv2.CAP_PROP_FPS)
     interval = args.interval
-    interval = int(fps/interval)
+    #interval = int(fps/interval)
     previous_detections_considered = args.previous_detections_considered -1 # -1 because we dont track the current action
     prevs = [] #array of previous detections
     for i in range(previous_detections_considered):
@@ -148,6 +171,36 @@ if __name__ == '__main__':
     "Point Left": 'left' 
     }
     cmds = ["None", "Palm Flat", "Point Left", "Point Right", "Thumbs Up"]
+        
+    # # # # #
+    # eye tracking prep
+    ####  similarly taken from http://www.pygaze.org/documentation/
+    
+    # create keyboard object
+    keyboard = Keyboard()
+    
+    # display object
+    disp = Display()
+    
+    # screen objects
+    screen = Screen()
+    blankscreen = Screen()
+    hitscreen = Screen()
+    hitscreen.clear(colour=(0,255,0))
+    misscreen = Screen()
+    misscreen.clear(colour=(255,0,0))
+    
+    # create eyelink objecy
+    eyetracker = EyeTracker(disp)
+    
+    # eyelink calibration
+    eyetracker.calibrate()
+    
+    # display surface
+    #disp.fill(screen=blankscreen)
+    #disp.show()
+    ####
+    
     
     main()
     
